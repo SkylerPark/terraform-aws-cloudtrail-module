@@ -1,4 +1,4 @@
-# terraform-aws-template
+# terraform-aws-cloudtrail-module
 
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white&style=flat-square)](https://github.com/pre-commit/pre-commit)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
@@ -20,19 +20,35 @@
 
 Terraform 모듈을 사용하여 아래 서비스를 관리 합니다.
 
-- **AWS EC2 (Elastic Compute Cloud)**
-  - instance
-  - aspot request
-  - key pair
+- **AWS CloudTrail**
+  - tracking(cloudtrail)
 
 ## Usage
 
 아래 예시를 활용하여 작성가능하며 examples 코드를 참고 부탁드립니다.
 
-### Single EC2 Instance
+### CloudTrail Tracking
+
+CloudTrail 에 추적 설정 예시 입니다.
 
 ```hcl
-module "ec2_instance" {
-  source ""
+module "tracking" {
+  source = "../../modules/tracking"
+
+  name = "parksm-test"
+
+  s3_bucket_name = "tail-log"
+  s3_key_prefix  = "parksm-live"
+
+  is_multi_region             = true
+  log_file_validation_enabled = true
+
+  event_selector = [
+    {
+      "include_management_events" = true
+      "read_write_type"           = "WriteOnly"
+    }
+  ]
 }
+
 ```
